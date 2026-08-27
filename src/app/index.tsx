@@ -43,6 +43,10 @@ export default function HomeScreen() {
           get started
         </ThemedText>
 
+        <ThemedText type="code" style={styles.code}>
+          get started
+        </ThemedText>
+
         <ThemedView type="backgroundElement" style={styles.stepContainer}>
           <HintRow
             title="Try editing"
