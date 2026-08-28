@@ -1,65 +1,51 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
+import { useState } from 'react';
+import { Pressable, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
-
 export default function HomeScreen() {
+  const [count, setCount] = useState(0);
+
+  const decreaseCount = () => {
+    setCount((currentCount) => currentCount - 1);
+  };
+
+  const increaseCount = () => {
+    setCount((currentCount) => currentCount + 1);
+  };
+
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
+        <ThemedView style={styles.content}>
+          <ThemedText type="subtitle">Лічильник</ThemedText>
+          <ThemedText themeColor="textSecondary">Натискай кнопки, щоб змінити число</ThemedText>
+
+          <ThemedView type="backgroundElement" style={styles.counterCard}>
+            <ThemedText style={styles.count}>{count}</ThemedText>
+
+            <ThemedView type="backgroundElement" style={styles.actions}>
+              <Pressable
+                accessibilityLabel="Зменшити значення"
+                accessibilityRole="button"
+                onPress={decreaseCount}
+                style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}>
+                <ThemedText style={styles.buttonText}>−</ThemedText>
+              </Pressable>
+
+              <Pressable
+                accessibilityLabel="Збільшити значення"
+                accessibilityRole="button"
+                onPress={increaseCount}
+                style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}>
+                <ThemedText style={styles.buttonText}>+</ThemedText>
+              </Pressable>
+            </ThemedView>
+          </ThemedView>
         </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
       </SafeAreaView>
     </ThemedView>
   );
@@ -68,35 +54,53 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
+    alignItems: 'center',
   },
   safeArea: {
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
+    width: '100%',
     maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
     paddingHorizontal: Spacing.four,
+    paddingBottom: BottomTabInset + Spacing.three,
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: Spacing.two,
+  },
+  counterCard: {
+    width: '100%',
+    maxWidth: 360,
+    marginTop: Spacing.four,
+    padding: Spacing.five,
+    borderRadius: Spacing.four,
+    alignItems: 'center',
     gap: Spacing.four,
   },
-  title: {
-    textAlign: 'center',
+  count: {
+    fontSize: 72,
+    lineHeight: 80,
+    fontWeight: '600',
   },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
+  actions: {
+    flexDirection: 'row',
     gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  },
+  button: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#3c87f7',
+  },
+  buttonPressed: {
+    opacity: 0.7,
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontSize: 32,
+    lineHeight: 36,
   },
 });
