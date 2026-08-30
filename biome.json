@@ -6,7 +6,8 @@
 		"useIgnoreFile": true
 	},
 	"files": {
-		"ignoreUnknown": false
+		"includes": ["**", "!assets/expo.icon", "!.claude"],
+		"ignoreUnknown": true
 	},
 	"formatter": {
 		"enabled": true,
@@ -16,7 +17,7 @@
 		"enabled": true,
 		"domains": {
 			"react": "recommended",
-			"reactNative": "all"
+			"reactNative": "recommended"
 		},
 		"rules": {
 			"preset": "recommended"
