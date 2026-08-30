@@ -1,116 +1,93 @@
 import { useState } from "react";
-import { Pressable, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-import { BottomTabInset, MaxContentWidth, Spacing } from "@/constants/theme";
+type Task = {
+	id: number;
+	text: string;
+};
 
 export default function HomeScreen() {
-	const [count, setCount] = useState(0);
+	const [inputValue, setInputValue] = useState<string>("");
+	const [tasks, setTasks] = useState<Task[]>([]);
 
-	const decreaseCount = () => {
-		setCount((currentCount) => currentCount - 1);
-	};
+	function changeText(text: string) {
+		setInputValue(text);
+	}
 
-	const increaseCount = () => {
-		setCount((currentCount) => currentCount + 1);
-	};
+	function addTasks() {
+		if (inputValue.trim() === "") {
+			return;
+		}
+
+		const newTask = {
+			id: Date.now(),
+			text: inputValue,
+		};
+
+		setTasks([...tasks, newTask]);
+		setInputValue("");
+	}
 
 	return (
-		<ThemedView style={styles.container}>
-			<SafeAreaView style={styles.safeArea}>
-				<ThemedView style={styles.content}>
-					<ThemedText type="subtitle">Лічильник</ThemedText>
-					<ThemedText themeColor="textSecondary">
-						Натискай кнопки, щоб змінити число
-					</ThemedText>
+		<View style={styles.container}>
+			<Text style={styles.title}>Мої задачі</Text>
 
-					<ThemedView type="backgroundElement" style={styles.counterCard}>
-						<ThemedText style={styles.count}>{count}</ThemedText>
+			<TextInput
+				value={inputValue}
+				style={styles.input}
+				placeholder="Введіть задачу"
+				onChangeText={changeText}
+			/>
 
-						<ThemedView type="backgroundElement" style={styles.actions}>
-							<Pressable
-								accessibilityLabel="Зменшити значення"
-								accessibilityRole="button"
-								onPress={decreaseCount}
-								style={({ pressed }) => [
-									styles.button,
-									pressed && styles.buttonPressed,
-								]}
-							>
-								<ThemedText style={styles.buttonText}>−</ThemedText>
-							</Pressable>
+			{tasks.map((task) => (
+				<View key={task.id}>
+					<Text>{task.text}</Text>
+				</View>
+			))}
 
-							<Pressable
-								accessibilityLabel="Збільшити значення"
-								accessibilityRole="button"
-								onPress={increaseCount}
-								style={({ pressed }) => [
-									styles.button,
-									pressed && styles.buttonPressed,
-								]}
-							>
-								<ThemedText style={styles.buttonText}>+</ThemedText>
-							</Pressable>
-						</ThemedView>
-					</ThemedView>
-				</ThemedView>
-			</SafeAreaView>
-		</ThemedView>
+			<Pressable style={styles.button} onPress={addTasks}>
+				<Text style={styles.buttonText}>Додати задачу</Text>
+			</Pressable>
+		</View>
 	);
 }
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		alignItems: "center",
+		marginTop: 70,
+		paddingInline: 20,
+		gap: 16,
 	},
-	safeArea: {
-		flex: 1,
-		width: "100%",
-		maxWidth: MaxContentWidth,
-		paddingHorizontal: Spacing.four,
-		paddingBottom: BottomTabInset + Spacing.three,
-	},
-	content: {
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-		gap: Spacing.two,
-	},
-	counterCard: {
-		width: "100%",
-		maxWidth: 360,
-		marginTop: Spacing.four,
-		padding: Spacing.five,
-		borderRadius: Spacing.four,
-		alignItems: "center",
-		gap: Spacing.four,
-	},
-	count: {
-		fontSize: 72,
-		lineHeight: 80,
+
+	title: {
+		fontSize: 28,
 		fontWeight: "600",
 	},
-	actions: {
-		flexDirection: "row",
-		gap: Spacing.three,
+
+	input: {
+		padding: 8,
+		borderWidth: 1,
+		borderRadius: 8,
 	},
+
+	taskItem: {
+		backgroundColor: "#e5e7eb",
+		borderRadius: 8,
+		padding: 16,
+		borderWidth: 1,
+	},
+
 	button: {
-		width: 64,
-		height: 64,
-		borderRadius: 32,
+		backgroundColor: "red",
+		padding: 12,
+		borderRadius: 8,
 		alignItems: "center",
-		justifyContent: "center",
-		backgroundColor: "#3c87f7",
 	},
-	buttonPressed: {
-		opacity: 0.7,
-	},
+
 	buttonText: {
-		color: "#ffffff",
-		fontSize: 32,
-		lineHeight: 36,
+		color: "white",
+		textAlign: "center",
+		fontWeight: "600",
 	},
 });
