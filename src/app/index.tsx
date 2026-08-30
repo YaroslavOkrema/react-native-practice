@@ -1,37 +1,9 @@
 import { Trash2 } from "lucide-react-native";
-import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-
-type Task = {
-	id: number;
-	text: string;
-};
+import { useApp } from "@/app/useApp";
 
 export default function HomeScreen() {
-	const [inputValue, setInputValue] = useState<string>("");
-	const [tasks, setTasks] = useState<Task[]>([]);
-
-	function changeText(text: string) {
-		setInputValue(text);
-	}
-
-	function addTasks() {
-		if (inputValue.trim() === "") {
-			return;
-		}
-
-		const newTask = {
-			id: Date.now(),
-			text: inputValue,
-		};
-
-		setTasks([...tasks, newTask]);
-		setInputValue("");
-	}
-
-	function deleteTask(id: number) {
-		setTasks(tasks.filter((task) => task.id !== id));
-	}
+	const { deleteTask, addTasks, changeText, inputValue, tasks } = useApp();
 
 	return (
 		<View style={styles.container}>
