@@ -4,12 +4,22 @@ import { TaskList } from "@/features/tasks/components/task-list/task-list";
 import { useTasks } from "@/features/tasks/use-tasks";
 
 export function TasksScreen() {
-	const { inputValue, tasks, changeInputValue, addTask, deleteTask } =
-		useTasks();
+	const {
+		inputValue,
+		tasks,
+		completedTasksCount,
+		changeInputValue,
+		addTask,
+		deleteTask,
+		toggleTask,
+	} = useTasks();
 
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>Мої задачі</Text>
+			<Text style={styles.progressText}>
+				Виконано {completedTasksCount} з {tasks.length}
+			</Text>
 
 			<TextInput
 				value={inputValue}
@@ -20,7 +30,11 @@ export function TasksScreen() {
 				returnKeyType="done"
 			/>
 
-			<TaskList tasks={tasks} onDeleteTask={deleteTask} />
+			<TaskList
+				tasks={tasks}
+				onDeleteTask={deleteTask}
+				onToggleTask={toggleTask}
+			/>
 
 			<Pressable style={styles.button} onPress={addTask}>
 				<Text style={styles.buttonText}>Додати задачу</Text>
@@ -40,6 +54,11 @@ const styles = StyleSheet.create({
 		fontSize: 30,
 		fontWeight: "700",
 		color: "#09090b",
+	},
+	progressText: {
+		marginTop: -10,
+		fontSize: 14,
+		color: "#71717a",
 	},
 	input: {
 		height: 48,
